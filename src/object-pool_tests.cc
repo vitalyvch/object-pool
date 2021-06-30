@@ -57,42 +57,46 @@ class ObjectPoolFixture : public ::testing::Test {
 
 ObjectPool<UsedObject, int> *ObjectPoolFixture::obj_pool = NULL;
 
-# if 0
-int main() {
-    ObjectPool<UsedObject, int> pool(0, 2, 5);
-    std::cout << "Initialized object pool with max size of " << pool.max_size() << std::endl;
-    std::cout << "Size of the pool: " << pool.size() << std::endl;
-    std::cout << "Available objects: " << pool.free() << std::endl;
+TEST_F(ObjectPoolFixture, Smoke) {
+	ASSERT_NE(nullptr, obj_pool);
+	// "Initialized object pool with max size of "
+	ASSERT_EQ(2U, obj_pool->max_size());
+	// "Size of the pool: "
+	ASSERT_EQ(0U, obj_pool->size());
+	// "Available objects: "
+	ASSERT_EQ(2U, obj_pool->free());
 
-    auto inst = pool.get();
+    auto inst = obj_pool->get();
     inst->increment();
     inst->print();
 
-    std::cout << "Available objects: " << pool.free() << std::endl;
-    std::cout << "Size of the pool: " << pool.size() << std::endl;
+	// "Size of the pool: "
+	ASSERT_EQ(1U, obj_pool->size());
+	// "Available objects: "
+	ASSERT_EQ(1U, obj_pool->free());
+
     {
-        auto inst2 = pool.get();
+        auto inst2 = obj_pool->get();
         inst->increment();
         inst->print();
-        std::cout << "Instance 2 pointer is " << inst2.get() << std::endl;
-        std::cout << "Available objects: " << pool.free() << std::endl;
-        std::cout << "Size of the pool: " << pool.size() << std::endl;
-    }
+		std::cout << "Instance 2 pointer is " << inst2.get() << std::endl;
 
-    std::cout << "Available objects: " << pool.free() << std::endl;
-    std::cout << "Size of the pool: " << pool.size() << std::endl;
-    auto inst2 = pool.get();
+		// "Size of the pool: "
+		ASSERT_EQ(2U, obj_pool->size());
+		// "Available objects: "
+		ASSERT_EQ(0U, obj_pool->free());
+	}
+
+	// "Size of the pool: "
+	ASSERT_EQ(2U, obj_pool->size());
+	// "Available objects: "
+	ASSERT_EQ(1U, obj_pool->free());
+
+    auto inst2 = obj_pool->get();
     std::cout << "Instance 2 pointer is " << inst2.get() << std::endl;
 
-    auto inst3 = pool.get();
-    assert(inst3 == nullptr);
-    assert(pool.empty());
-    std::cout << "Pool is empty, all objects are in use" << std::endl;
-}
-#endif
-
-TEST_F(ObjectPoolFixture, Smoke) {
-	/////////////
-	ASSERT_NE(nullptr, obj_pool);
-	///ASSERT_NE(nullptr, obj_pool->base);
+    auto inst3 = obj_pool->get();
+    ASSERT_TRUE(inst3 == nullptr);
+	// "Pool is empty, all objects are in use"
+    ASSERT_TRUE(obj_pool->empty());
 }
