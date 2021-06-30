@@ -11,6 +11,8 @@
 #include <memory>
 #include <stack>
 #include <tuple>
+#include <mutex>
+
 
 // Base class for all poolable objects
 class PoolableObject {
@@ -34,6 +36,8 @@ public:
     }
 
     pointer_type<T> get() {
+        std::unique_lock<std::mutex> lck(this->object_mutex);
+
         if (_pool.empty()) {
             if (_available == 0) {
                 return nullptr;
@@ -43,7 +47,7 @@ public:
         --_available;
         auto inst = std::move(_pool.top());
         _pool.pop();
-        return std::move(inst);
+        return /*std::move*/(inst);
     }
 
     std::size_t free() { return _available; }
@@ -86,6 +90,7 @@ private:
     std::size_t _max_size;
     std::size_t _available;
     std::size_t _size;
+    std::mutex object_mutex;
     std::stack<pointer_type<T>> _pool;
     std::tuple<Args...> _args;
 };
