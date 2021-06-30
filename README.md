@@ -6,3 +6,9 @@ A generic C++ object pool implementation
 ```
  $ cmake . && make
 ```
+
+### Self-Testing
+
+```
+ $ pushd src && ctest && popd
+```
