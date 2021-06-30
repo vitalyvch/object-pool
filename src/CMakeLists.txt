@@ -7,8 +7,8 @@ add_library(object-pool STATIC
 	object-pool.cc)
 set_target_properties(object-pool PROPERTIES
 	PREFIX ""
-	CXX_STANDARD 11
-	COMPILE_OPTIONS "-O2;-pthread;-Wall;-Wextra;-std=gnu++11"
+	CXX_STANDARD 14
+	COMPILE_OPTIONS "-O2;-pthread;-Wall;-Wextra;-std=gnu++14"
 	LINK_FLAGS "-O2 -pthread")
 
 target_include_directories(object-pool PUBLIC
@@ -32,8 +32,8 @@ target_include_directories(object-pool_tests PUBLIC
 
 set_target_properties(object-pool_tests
 	PROPERTIES
-	CXX_STANDARD 11
-	COMPILE_OPTIONS "-g;-O2;-pthread;-Wall;-Wextra;-std=gnu++11"
+	CXX_STANDARD 14
+	COMPILE_OPTIONS "-g;-O2;-pthread;-Wall;-Wextra;-std=gnu++14"
 	LINK_FLAGS "-g -O2 -pthread -uRound")
 
 execute_process(COMMAND date "+%F_%T"
